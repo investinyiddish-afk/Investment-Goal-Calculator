@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Investment Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      margin: 0;
+      color: #2d3748;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      padding: 40px;
+    }
+
+    h2 {
+      color: #1a202c;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      color: #4a5568;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 400;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      font-size: 14px;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: none;
+      padding: 16px 12px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    thead th {
+      background: linear-gradient(135deg, #4299e1, #3182ce);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+
+    tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    tbody tr:hover {
+      background: linear-gradient(135deg, #f7fafc, #edf2f7);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    input {
+      width: 85%;
+      min-width: 80px;
+      max-width: 150px;
+      padding: 10px 8px;
+      text-align: center;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4299e1;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+      transform: scale(1.02);
+    }
+
+    td:nth-child(1) input {
+      width: 120px;
+      max-width: 120px;
+    }
+
+    td:nth-child(2) input {
+      width: 90px;
+      max-width: 90px;
+    }
+
+    td:nth-child(3) input,
+    td:nth-child(4) input {
+      width: 60px;
+      max-width: 60px;
+    }
+
+    td:nth-child(5) input {
+      width: 50px;
+      max-width: 50px;
+    }
+
+    td:nth-child(6) input {
+      width: 90px;
+      max-width: 90px;
+    }
+
+    .summary-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding-top: 30px;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .summary-box {
+      background: linear-gradient(135deg, #ffffff, #f7fafc);
+      margin: 5px;
+      padding: 25px 20px;
+      border-radius: 20px;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      flex: 1 1 22%;
+      font-size: 14px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .summary-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border-color: #4299e1;
+    }
+
+    .summary-number {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4299e1, #3182ce);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    button {
+      margin: 20px 15px 0 0;
+      padding: 14px 28px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    #computeButton {
+      background: linear-gradient(135deg, #4299e1, #3182ce);
+      color: white;
+      box-shadow: 0 8px 20px rgba(66, 153, 225, 0.4);
+    }
+
+    #computeButton:hover {
+      background: linear-gradient(135deg, #3182ce, #2b77b3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(66, 153, 225, 0.5);
+    }
+
+    .print-btn {
+      background: linear-gradient(135deg, #718096, #4a5568);
+      color: white;
+      box-shadow: 0 8px 20px rgba(113, 128, 150, 0.4);
+    }
+
+    .print-btn:hover {
+      background: linear-gradient(135deg, #4a5568, #2d3748);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(113, 128, 150, 0.5);
+    }
+
+    button[onclick="addRow()"] {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+    }
+
+    button[onclick="addRow()"]:hover {
+      background: linear-gradient(135deg, #38a169, #2f855a);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(72, 187, 120, 0.5);
+    }
+
+    .disclaimer {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 40px;
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      background: linear-gradient(135deg, #f7fafc, #edf2f7);
+      padding: 25px;
+      border-radius: 15px;
+      border-left: 5px solid #4299e1;
+    }
+
+    .disclaimer p {
+      margin: 8px 0;
+    }
+
+    .invested {
+      color: #4299e1;
+      font-weight: 700;
+    }
+
+    .gain {
+      color: #48bb78;
+      font-weight: 700;
+    }
+
+    .remove-btn {
+      color: #e53e3e;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 24px;
+      transition: all 0.3s ease;
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fed7d7, #feb2b2);
+      line-height: 30px;
+    }
+
+    .remove-btn:hover {
+      background: linear-gradient(135deg, #e53e3e, #c53030);
+      color: white;
+      transform: rotate(90deg) scale(1.1);
+    }
+
+    .group-heading {
+      background: linear-gradient(135deg, #667eea, #764ba2) !important;
+      color: white !important;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    th.group-separator,
+    td.group-separator {
+      border-left: 3px solid #4299e1;
+    }
+
+    .summary-total-text {
+      font-weight: 700;
+      margin-top: 40px;
+      text-align: center;
+      font-size: 1.3rem;
+      color: #2d3748;
+      background: linear-gradient(135deg, #f7fafc, #edf2f7);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px dashed #4299e1;
+    }
+
+    .summary-container .or-text {
+      font-weight: 700;
+      padding: 0 10px;
+      color: #4a5568;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      #calcTable tr {
+        background: white;
+        margin-bottom: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        padding: 20px;
+        border: 2px solid #e2e8f0;
+      }
+
+      #calcTable td {
+        border: none;
+        padding: 12px 15px;
+        text-align: left;
+      }
+
+      #calcTable td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+        color: #4299e1;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+      }
+
+      .remove-btn {
+        display: block;
+        margin: 15px auto 0;
+      }
+
+      input {
+        width: 100%;
+      }
+
+      .summary-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .summary-box {
+        flex: 1 1 100%;
+        max-width: 350px;
+      }
+    }
+
+    @media print {
+      @page {
+        size: landscape;
+        margin: 0.3in;
+      }
+     
+      body {
+        background: white !important;
+        padding: 5px !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+      }
+     
+      .container {
+        background: white !important;
+        box-shadow: none !important;
+        padding: 8px !important;
+        max-width: none !important;
+      }
+     
+      h2 {
+        color: #2d3748 !important;
+        -webkit-text-fill-color: #2d3748 !important;
+        background: none !important;
+        font-size: 18px !important;
+        margin: 5px 0 !important;
+        text-align: center !important;
+      }
+     
+      p {
+        font-size: 10px !important;
+        margin: 5px 0 !important;
+        text-align: center !important;
+      }
+     
+      table {
+        font-size: 8px !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        margin: 8px 0 !important;
+      }
+     
+      th, td {
+        padding: 2px 1px !important;
+        font-size: 7px !important;
+        word-wrap: break-word !important;
+        border: 1px solid #666 !important;
+        vertical-align: middle !important;
+      }
+     
+      .group-heading {
+        background: #666 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        font-size: 6px !important;
+        font-weight: bold !important;
+      }
+     
+      thead th {
+        background: #666 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        font-size: 6px !important;
+        padding: 2px 1px !important;
+        font-weight: bold !important;
+      }
+     
+      /* More compact column widths */
+      th:nth-child(1), td:nth-child(1) { width: 10% !important; }
+      th:nth-child(2), td:nth-child(2) { width: 9% !important; }
+      th:nth-child(3), td:nth-child(3) { width: 7% !important; }
+      th:nth-child(4), td:nth-child(4) { width: 7% !important; }
+      th:nth-child(5), td:nth-child(5) { width: 7% !important; }
+      th:nth-child(6), td:nth-child(6) { width: 9% !important; }
+      th:nth-child(7), td:nth-child(7) { width: 8% !important; }
+      th:nth-child(8), td:nth-child(8) { width: 8% !important; }
+      th:nth-child(9), td:nth-child(9) { width: 8% !important; }
+      th:nth-child(10), td:nth-child(10) { width: 8% !important; }
+      th:nth-child(11), td:nth-child(11) { width: 8% !important; }
+     
+      input {
+        width: 98% !important;
+        max-width: none !important;
+        padding: 1px !important;
+        font-size: 6px !important;
+        background: white !important;
+        color: #000 !important;
+        border: none !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+      }
+     
+      .summary-total-text {
+        font-size: 11px !important;
+        margin: 8px 0 5px 0 !important;
+        padding: 5px !important;
+        text-align: center !important;
+        font-weight: bold !important;
+      }
+     
+      .summary-container {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 3px !important;
+        margin: 5px 0 !important;
+        justify-content: space-between !important;
+      }
+     
+      .summary-box {
+        background: white !important;
+        border: 1px solid #666 !important;
+        padding: 4px 2px !important;
+        flex: 1 !important;
+        text-align: center !important;
+        font-size: 8px !important;
+      }
+     
+      .summary-number {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+        background: none !important;
+        font-weight: bold !important;
+        font-size: 11px !important;
+        display: block !important;
+        margin-bottom: 2px !important;
+      }
+     
+      .summary-box small {
+        font-size: 6px !important;
+        color: #333 !important;
+      }
+     
+      .or-text {
+        color: #000 !important;
+        font-size: 8px !important;
+        align-self: center !important;
+        font-weight: bold !important;
+        flex: 0 0 auto !important;
+        padding: 0 2px !important;
+      }
+     
+      .disclaimer {
+        font-size: 7px !important;
+        margin: 5px 0 0 0 !important;
+        padding: 5px !important;
+        page-break-inside: avoid !important;
+        border: 1px solid #ccc !important;
+        background: #f9f9f9 !important;
+      }
+     
+      .disclaimer p {
+        margin: 2px 0 !important;
+        font-size: 7px !important;
+      }
+     
+      /* Results columns styling */
+      .weekly, .monthly, .yearly, .invested, .gain {
+        font-size: 6px !important;
+        font-weight: bold !important;
+      }
+     
+      .invested {
+        color: #0066cc !important;
+      }
+     
+      .gain {
+        color: #009900 !important;
+      }
+     
+      button, .remove-btn {
+        display: none !important;
+      }
+     
+      /* Hide the remove column completely in print */
+      th:nth-child(12), td:nth-child(12) {
+        display: none !important;
+      }
+     
+      /* Ensure everything fits on one page */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Investment Planning Scenarios</h2>
+    <p>Enter your goal, age range, interest rate, and initial investment per scenario. Click "Calculate" to see results.</p>
+
+    <button onclick="window.print()" class="print-btn">🖨️ Print / Save as PDF</button>
+
+    <table id="calcTable">
+      <thead>
+        <tr>
+          <th colspan="6" class="group-heading">Investment Breakdown</th>
+          <th colspan="3" class="group-heading group-separator">Investment Needed <br><small>(choose one: weekly <strong>or</strong> monthly <strong>or</strong> yearly)</small></th>
+          <th colspan="2" class="group-heading group-separator">Totals</th>
+          <th rowspan="2">➖</th>
+        </tr>
+        <tr>
+          <th>Name</th>
+          <th>Goal Amount ($)</th>
+          <th>Current Age</th>
+          <th>Target Age</th>
+          <th>Expected Interest Rate (%)</th>
+          <th>Starting Amount ($)</th>
+          <th class="group-separator">Weekly</th>
+          <th>Monthly</th>
+          <th>Yearly</th>
+          <th class="group-separator">Invested</th>
+          <th>Gain</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <button onclick="addRow()">➕ Add Row</button>
+    <button id="computeButton" onclick="compute()">Calculate</button>
+
+    <p class="summary-total-text">
+      You will need to invest a total of <u>(choose one)</u>:
+    </p>
+
+    <div class="summary-container">
+      <div class="summary-box" id="weeklyTotal"><span class="summary-number">$0.00</span><br><small>Weekly Total</small></div>
+      <div class="or-text">or</div>
+      <div class="summary-box" id="monthlyTotal"><span class="summary-number">$0.00</span><br><small>Monthly Total</small></div>
+      <div class="or-text">or</div>
+      <div class="summary-box" id="yearlyTotal"><span class="summary-number">$0.00</span><br><small>Yearly Total</small></div>
+      <div class="summary-box" id="initialTotal"><span class="summary-number">$0.00</span><br><small>Initial Investment Total</small></div>
+    </div>
+
+    <div class="disclaimer">
+      <p>This is a planning estimate. Results may vary. Past performance does not guarantee future outcomes.</p>
+      <p><strong>Note:</strong> In the results above, you only need to choose <strong>one</strong> contribution option: <em>weekly</em>, <em>monthly</em>, or <em>yearly</em>. You do <strong>not</strong> need to use all three.</p>
+    </div>
+  </div>
+
+  <script>
+    function formatNumber(num, decimals = 0) {
+      return num.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function parseNumber(str) {
+      return parseFloat(str.replace(/,/g, '')) || 0;
+    }
+
+    function addRow(values = {}) {
+      const tbody = document.getElementById('tableBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td data-label="Name"><input type="text" class="name" value="${values.name || ''}"></td>
+        <td data-label="Goal Amount ($)"><input type="text" class="goal formatted" value="${values.goal || ''}"></td>
+        <td data-label="Current Age"><input type="text" class="start formatted" value="${values.start || ''}"></td>
+        <td data-label="Target Age"><input type="text" class="end formatted" value="${values.end || ''}"></td>
+        <td data-label="Expected Interest Rate (%)"><input type="text" class="rate formatted" value="${values.rate || 10}"></td>
+        <td data-label="Starting Amount ($)"><input type="text" class="initial formatted" value="${values.initial || 0}"></td>
+        <td class="weekly group-separator" data-label="Weekly">--</td>
+        <td class="monthly" data-label="Monthly">--</td>
+        <td class="yearly" data-label="Yearly">--</td>
+        <td class="invested group-separator" data-label="Invested">--</td>
+        <td class="gain" data-label="Gain">--</td>
+        <td data-label="Remove"><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+      `;
+      tbody.appendChild(row);
+      attachFormatListeners(row);
+    }
+
+    function removeRow(element) {
+      const row = element.closest("tr");
+      row.remove();
+      compute();
+    }
+
+    function compute() {
+      let weeklySum = 0, monthlySum = 0, yearlySum = 0, initialSum = 0;
+
+      document.querySelectorAll("#tableBody tr").forEach(row => {
+        const goal = parseNumber(row.querySelector(".goal")?.value);
+        const startAge = parseNumber(row.querySelector(".start")?.value);
+        const endAge = parseNumber(row.querySelector(".end")?.value);
+        const rateInput = parseNumber(row.querySelector(".rate")?.value) / 100;
+        const initial = parseNumber(row.querySelector(".initial")?.value);
+
+        const years = endAge - startAge;
+        const weeks = years * 52;
+        const r = rateInput / 52;
+
+        if (goal > 0 && years > 0 && rateInput > 0) {
+          const fvInitial = initial * Math.pow(1 + r, weeks);
+          const remainingGoal = goal - fvInitial;
+
+          const weekly = remainingGoal > 0 ? remainingGoal * r / (Math.pow(1 + r, weeks) - 1) : 0;
+          const monthly = weekly * 52 / 12;
+          const yearly = weekly * 52;
+          const invested = initial + weekly * weeks;
+          const gain = goal - invested;
+
+          row.querySelector(".weekly").textContent = "$" + formatNumber(weekly, 2);
+          row.querySelector(".monthly").textContent = "$" + formatNumber(monthly, 2);
+          row.querySelector(".yearly").textContent = "$" + formatNumber(yearly, 0);
+          row.querySelector(".invested").textContent = "$" + formatNumber(invested, 0);
+          row.querySelector(".gain").textContent = "$" + formatNumber(gain, 0);
+
+          weeklySum += weekly;
+          monthlySum += monthly;
+          yearlySum += yearly;
+          initialSum += initial;
+        } else {
+          row.querySelectorAll("td").forEach(td => {
+            if (td.className) td.textContent = "--";
+          });
+        }
+      });
+
+      document.getElementById("weeklyTotal").innerHTML = `<span class="summary-number">$${formatNumber(weeklySum, 2)}</span><br><small>Weekly Total</small>`;
+      document.getElementById("monthlyTotal").innerHTML = `<span class="summary-number">$${formatNumber(monthlySum, 2)}</span><br><small>Monthly Total</small>`;
+      document.getElementById("yearlyTotal").innerHTML = `<span class="summary-number">$${formatNumber(yearlySum, 0)}</span><br><small>Yearly Total</small>`;
+      document.getElementById("initialTotal").innerHTML = `<span class="summary-number">$${formatNumber(initialSum, 0)}</span><br><small>Initial Investment Total</small>`;
+    }
+
+    function attachFormatListeners(row) {
+      row.querySelectorAll(".formatted").forEach(input => {
+        input.addEventListener("input", function () {
+          const cursorPos = this.selectionStart;
+          const rawValue = this.value.replace(/,/g, '');
+          const numericValue = parseNumber(rawValue);
+          this.value = formatNumber(numericValue);
+          this.setSelectionRange(cursorPos, cursorPos);
+        });
+
+        input.addEventListener("focus", function () {
+          this.value = this.value.replace(/,/g, '');
+        });
+
+        input.addEventListener("blur", function () {
+          const val = parseNumber(this.value);
+          if (!isNaN(val)) this.value = formatNumber(val);
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      addRow();
+    });
+  </script>
+</body>
+</html>
